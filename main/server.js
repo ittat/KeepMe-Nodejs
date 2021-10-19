@@ -1,16 +1,14 @@
 #!/usr/bin/env node
 
-require('module-alias/register');
+import 'module-alias/register'
+import createError from "http-errors"
+import express from "express"
+import path from "path"
+import cookieParser from "cookie-parser"
+import logger from "morgan"
 
-const mysql = require('@main/mysql')
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-
-var indexRouter = require('@root/routes/index');
-var usersRouter = require('@root/routes/user');
+import indexRouter from "@root/routes/index"
+import usersRouter from "@root/routes/user"
 
 var app = express();
 
@@ -43,4 +41,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+export default app
