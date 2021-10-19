@@ -129,3 +129,28 @@ test('get user info failed', (done) => {
         }
     )
 })
+
+
+test('get postid sucucess', (done) => {
+    axios.get('/post/1', {}).then(res => {
+        console.log(res.data)
+        expect(res.data.code).toBe(105)
+        done()
+    }).catch(
+        () => {
+            expect().toThrow()
+        }
+    )
+})
+
+test('get postid unmatch sucucess', (done) => {
+    axios.get('/post/1999999999', {}).then(res => {
+        console.log(res.data)
+        expect(res.data.code).toBe(107)
+        done()
+    }).catch(
+        () => {
+            expect().toThrow()
+        }
+    )
+})

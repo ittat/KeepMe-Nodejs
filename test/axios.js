@@ -34,10 +34,10 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(function (response) {
     // 对响应数据做点什么
 
-    //如果响应status 为 未登陆101 和 登陆成功 102 ，需要更新 token
+    //如果响应status 为 未登陆101 和 登陆成功 102, 成功退出 103 ，需要更新 token
 
     //需要router到登陆页面
-    console.log(response.data)
+    // console.log(response.data)
     if (response.data.code === 101 || response.data.code === 103)  {
         token = null
     }else if (response.data.code === 102) {
