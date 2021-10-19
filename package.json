@@ -1,0 +1,41 @@
+{
+  "name": "expressserver",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon --exec babel-node  ./main/index.js",
+    "dev": "DEBUG=expressserver:* npm start",
+    "unit:test": "jest"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
+    "module-alias-jest": "0.0.3",
+    "morgan": "~1.9.1",
+    "nodemon": "^2.0.13",
+    "ts-node": "^10.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/node": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "axios": "^0.23.0",
+    "jest": "^27.3.0",
+    "mysql": "^2.18.1"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@test": "./test",
+    "@main": "./main"
+  },
+  "_aliases": {
+    "@root": ".",
+    "@test": "./test",
+    "@main": "./main"
+  }
+}
