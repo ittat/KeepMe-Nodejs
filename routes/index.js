@@ -10,7 +10,7 @@ router.get('/', async (req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader('Content-Type', 'application/json');
   const token = req.headers.authorization
-  console.log(token)
+  // console.log(token)
   let cmd, data = {
     code: 105
   }

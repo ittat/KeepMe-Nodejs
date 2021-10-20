@@ -33,6 +33,19 @@ test('get posts feed sucucess with token', (done) => {
 })
 
 
+test('send new post sucucess', (done) => {
+    axios.post('/post', qs.stringify({
+        context: "dsfdsfdsf jkhjksdfhjks jhdfjkds 323424 234324234 23432",
+        img: "null"
+    })).then(res => {
+        console.log(res.data)
+        expect(res.data.code).toBe(105)
+        done()
+    })
+})
+
+
+
 test('logout sucesss', (done) => {
     const data = {
         'username': 'test'
@@ -91,11 +104,11 @@ test('create username', (done) => {
     const data = {
         'username': 'test_create',
         'password': '1234',
-        'email':'123434dsfdsfdsfdsfds@email.com'
+        'email': '123434dsfdsfdsfdsfds@email.com'
     }
     axios.post('/user/create', qs.stringify(data)).then(res => {
         console.log(res.data)
-        expect(res.data.code == 102 || res.data.code == 101 ).toBe(true)
+        expect(res.data.code == 102 || res.data.code == 101).toBe(true)
         done()
     }).catch(
         () => {
