@@ -87,7 +87,6 @@ CREATE TABLE  `posts_data` (
     `context` text,
     `date` date NOT NULL,
     `time` time NOT NULL,
-    `like` int(9) DEFAULT 0,
     `img` text CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
     PRIMARY KEY (`postId`)
 )ENGINE=InnoDB AUTO_INCREMENT=2021 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

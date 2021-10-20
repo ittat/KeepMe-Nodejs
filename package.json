@@ -32,14 +32,16 @@
     "@root": ".",
     "@test": "./test",
     "@main": "./main",
-    "@routes":"./routes",
-    "@auth":"./unitils/auth.js"
+    "@routes": "./routes",
+    "@auth": "./unitils/auth.js",
+    "@sql": "./unitils/cmdMysql.js"
   },
   "_aliases": {
     "@root": ".",
     "@test": "./test",
     "@main": "./main",
-    "@routes":"./routes",
-    "@auth":"./unitils/auth.js"
+    "@routes": "./routes",
+    "@auth": "./unitils/auth.js",
+    "@sql": "./unitils/cmdMysql.js"
   }
 }

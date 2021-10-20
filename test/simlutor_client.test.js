@@ -57,7 +57,7 @@ test('add post commit sucucess with token', (done) => {
 
 test('send new post sucucess', (done) => {
     axios.post('/post', qs.stringify({
-        context: "dsfdsfdsf jkhjksdfhjks jhdfjkds 323424 234324234 23432",
+        context: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!dsfdsfdsf jkhjksdfhjks jhdfjkds 323424 234324234 23432",
         img: "null"
     })).then(res => {
         console.log(res.data)
@@ -167,7 +167,7 @@ test('get user info success', (done) => {
 test('get user info failed', (done) => {
     axios.get('/user/testNULLL', {}).then(res => {
         console.log(res.data)
-        expect(res.data.code).toBe(107)
+        expect(res.data.code).toBe(106)
         done()
     }).catch(
         () => {
@@ -192,13 +192,9 @@ test('get postid sucucess', (done) => {
 test('get postid unmatch sucucess', (done) => {
     axios.get('/post/1999999999', {}).then(res => {
         console.log(res.data)
-        expect(res.data.code).toBe(107)
+        expect(res.data.code).toBe(106)
         done()
-    }).catch(
-        () => {
-            expect().toThrow()
-        }
-    )
+    })
 })
 
 test('get posts feed sucucess without token', (done) => {
