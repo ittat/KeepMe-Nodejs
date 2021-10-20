@@ -30,7 +30,7 @@ app.use('/post', postsRouter);
 //use 501 NOT Implemented flag - when catch 404 and forward to error handler
 app.use(function(req, res, next) {
   // next(createError(404));
-  res.sendStatus(404)
+  res.sendStatus(501)
 });
 
 // error handler

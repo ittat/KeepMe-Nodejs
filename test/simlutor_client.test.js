@@ -25,11 +25,33 @@ test('get posts feed sucucess with token', (done) => {
         console.log(res.data.code)
         expect(res.data.code).toBe(105)
         done()
-    }).catch(
-        () => {
-            expect().toThrow()
-        }
-    )
+    })
+})
+
+test('add like post sucucess with token', (done) => {
+    axios.get('/post/2021/like/add', {}).then(res => {
+        console.log(res.data)
+        expect(res.data.code).toBe(105)
+        done()
+    })
+})
+
+test('remove like post sucucess with token', (done) => {
+    axios.get('/post/2021/like/remove', {}).then(res => {
+        console.log(res.data)
+        expect(res.data.code).toBe(105)
+        done()
+    })
+})
+
+test('add post commit sucucess with token', (done) => {
+    axios.post('/post/2021/commit', qs.stringify({
+        context:"dhfjdkshfksdj456456cvxcjkvhcxjk 895435 jkhdsjkfh r423423h dssfj"
+    })).then(res => {
+        console.log(res.data)
+        expect(res.data.code).toBe(105)
+        done()
+    })
 })
 
 
@@ -43,8 +65,6 @@ test('send new post sucucess', (done) => {
         done()
     })
 })
-
-
 
 test('logout sucesss', (done) => {
     const data = {
@@ -191,4 +211,13 @@ test('get posts feed sucucess without token', (done) => {
             expect().toThrow()
         }
     )
+})
+
+
+test('get post sum', (done) => {
+    axios.get('/post/2025/like_sum', qs.stringify({})).then(res => {
+        console.log(res.data)
+        expect(res.data.code).toBe(105)
+        done()
+    })
 })
