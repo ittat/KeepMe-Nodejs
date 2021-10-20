@@ -31,11 +31,13 @@
   "_moduleAliases": {
     "@root": ".",
     "@test": "./test",
-    "@main": "./main"
+    "@main": "./main",
+    "@auth":"./unitils/auth.js"
   },
   "_aliases": {
     "@root": ".",
     "@test": "./test",
-    "@main": "./main"
+    "@main": "./main",
+    "@auth":"./unitils/auth.js"
   }
 }

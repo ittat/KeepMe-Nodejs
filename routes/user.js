@@ -1,47 +1,8 @@
-import pool from "@main/mysql";
-import jwt from "jsonwebtoken";
-import { Router } from "express";
+import pool from "@main/mysql"
+import { Router } from "express"
+import auth from "@auth"
 
-var router = Router();
-
-const KEY = "test-key"
-
-const setToken = (data) => {
-  return new Promise((r, j) => {
-    const token = jwt.sign(data, KEY, {
-      expiresIn: 60 * 60 * 24// 授权时效24小时
-    })//此方法会生成一个token，第一个参数是数据，第二个参数是签名,第三个参数是token的过期时间可以不设置
-    //mysql
-    const cmd = `update login_data set token='${token}' where username='${data.username}'`
-    pool.query(cmd, (err, res) => {
-      if (err) {
-        j(err)
-      }
-      r(token)
-    })
-  }).then((token) => {
-    return token
-  }).catch((e) => {
-    console.error(e);
-    return null
-  })
-
-}
-
-const getToken = (data) => {
-  //mysql
-  return new Promise((r, j) => {
-    const cmd = `SELECT token FROM login_data where username='${data.username}'`
-    pool.query(cmd, (err, res) => {
-      if (err) {
-        console.error(err);
-        j(err)
-      } else {
-        r(res[0].token)
-      }
-    })
-  })
-}
+var router = Router()
 
 const getUserInfos = (username) => {
   return new Promise((r, j) => {
@@ -93,50 +54,34 @@ router.post('/create', (req, res, next) => {
 })
 
 //TODO 改成 setToken await 写法 
-router.post('/login', (req, res, next) => {
+router.post('/login', async (req, res, next) => {
   res.statusCode = 200;
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader('Content-Type', 'application/json');
 
-  let data = {
-    code: 102,
-    token: null,
-    msg: null
-  }
-  const password = req.body.password
-  const username = req.body.username
-  // const clientToken = req.headers.authorization
-  // console.log(clientToken);
+  let data = { code: 102, token: null, msg: null }
 
   //查询mysql
-  const cmd = `SELECT password FROM login_data where username='${username}'`
-  pool.query(cmd, (err, sqlres) => {
+  const cmd = `SELECT password FROM login_data where username='${req.body.username}'`
+  await pool.query(cmd, async (err, sqlres) => {
     if (err) {
       //mysql 执行异常
       data.code = 106
       data.msg = err
-      res.send(data)
-
     } else if (typeof (sqlres[0]) == "undefined") {
       //查询未空，不存在
       data.code = 101
       data.msg = "username unmatch"
-      res.send(data)
     } else {
-      if (sqlres[0].password == password) {
-        setToken(req.body).then(
-          (token) => {
-            data.token = token
-            res.send(data)
-          }
-        )
+      if (sqlres[0].password == req.body.password) {
+        data.code = 102
+        data.token = auth.signToken(req.body)
       } else {
         data.msg = "unmatch password"
         data.code = 101
-        res.send(data)
       }
     }
-
+    res.send(data)
   })
 })
 
@@ -151,16 +96,15 @@ router.post('/logout', async (req, res, next) => {
     msg: null
   }
   const username = req.body.username
-  const clientToken = req.headers.authorization
-  console.log(clientToken);
-  try {
-    const userToken = await getToken(req.body)
-    console.log(userToken);
 
-    if (userToken == clientToken) {
+  try {
+    if (!req.headers.authorization) {
+      throw (Error)
+    }
+    if (await auth.isAuth(req.headers.authorization)) {
       //验证通过，清除token
       const cmd = `update login_data set token=NULL where username='${username}'`
-      pool.query(cmd, (err, sqlres) => {
+      await pool.query(cmd, (err, sqlres) => {
         if (err) {
           //mysql 执行出错
           data.code = 106
@@ -168,8 +112,8 @@ router.post('/logout', async (req, res, next) => {
         } else {
           data.msg = '用户成功退出'
         }
-        res.send(data)
       })
+      res.send(data)
     } else {
       //验证不通过
       throw (Error)

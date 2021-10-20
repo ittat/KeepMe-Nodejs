@@ -76,9 +76,9 @@ test('login username failed', (done) => {
 
 test('create username', (done) => {
     const data = {
-        'username': 'test4',
+        'username': 'test_create',
         'password': '1234',
-        'email':'123434@email.com'
+        'email':'123434dsfdsfdsfdsfds@email.com'
     }
     axios.post('/user/create', qs.stringify(data)).then(res => {
         console.log(res.data)
@@ -132,7 +132,7 @@ test('get user info failed', (done) => {
 
 
 test('get postid sucucess', (done) => {
-    axios.get('/post/1', {}).then(res => {
+    axios.get('/post/2021', {}).then(res => {
         console.log(res.data)
         expect(res.data.code).toBe(105)
         done()
