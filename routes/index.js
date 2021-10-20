@@ -5,8 +5,12 @@ import sql from "@sql"
 var router = Router()
 
 /* feed page. */
-router.get('/', async (req, res, next) => {
-  const token = req.headers.authorization
+router.get('/feeds/start=([0-9]+)?/length=([0-9]+)?', async (req, res, next) => {
+  console.log(req.params);
+  const
+    start = req.params[0],
+    length = req.params[1],
+    token = req.headers.authorization
   // console.log(token)
   let cmd, data = {
     code: 105
@@ -17,18 +21,20 @@ router.get('/', async (req, res, next) => {
       cmd = `select p.postId, p.context, p.img, p.date, p.time, u.username 
              from posts_data p, user_infos u
              where  u.userId=p.userId 
-             order by 'date','time' 
-             limit 100`
+             order by p.date, p.time 
+             limit ${start},${length}`
     } else {
       // user mode
       const tokendata = await auth.getDataFromToken(token)
-      cmd = ` select p.postId,p.date,p.time from posts_data p
-                  where userId in 
+      cmd = ` select p.postId, p.context, p.img, p.date, p.time, u.username 
+              from posts_data p, user_infos u
+                  where p.userId in 
                     (select followId from follow_link 
                       where followerId=
                         (select userId from login_data where username='${tokendata.username}')
                     ) 
-                  order by 'date','time'`
+                  order by p.date, p.time
+                  limit ${start},${length}`
     }
 
     data.code = 105

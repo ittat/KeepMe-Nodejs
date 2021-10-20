@@ -21,7 +21,7 @@ test('login sucesss', (done) => {
 })
 
 test('get posts feed sucucess with token', (done) => {
-    axios.get('/', {}).then(res => {
+    axios.get('/feeds/start=0/length=2', {}).then(res => {
         console.log(res.data.code)
         expect(res.data.code).toBe(105)
         done()
@@ -198,7 +198,7 @@ test('get postid unmatch sucucess', (done) => {
 })
 
 test('get posts feed sucucess without token', (done) => {
-    axios.get('/', {}).then(res => {
+    axios.get('/feeds/start=0/length=2', {}).then(res => {
         console.log(res.data.code)
         expect(res.data.code).toBe(105)
         done()
