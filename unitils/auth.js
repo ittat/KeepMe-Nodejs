@@ -45,10 +45,17 @@ const unsignatureToken = async (token) => {
     })
 }
 
+const getDataFromToken = async (token) =>{
+    return await unsignatureToken(token)
+}
+
 const isAuth = async (token) => {
-    let isAuth
     try {
-        const data = await unsignatureToken(token)
+        if (!token) {
+            throw (Error)
+        }
+        let isAuth
+        const data = await getDataFromToken(token)
         const password = await getPassWordFormDB(data.username)
         isAuth = (data.password == password) ? true : false
     } catch (err) {
@@ -59,4 +66,4 @@ const isAuth = async (token) => {
     }
 }
 
-export default { isAuth, signToken }
+export default { isAuth, signToken,getDataFromToken }

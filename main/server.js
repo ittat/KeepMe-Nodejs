@@ -7,8 +7,9 @@ import path from "path"
 import cookieParser from "cookie-parser"
 import logger from "morgan"
 
-import indexRouter from "@root/routes/index"
-import usersRouter from "@root/routes/user"
+import indexRouter from "@routes/index"
+import usersRouter from "@routes/user"
+import postsRouter from "@routes/post"
 
 var app = express();
 
@@ -24,11 +25,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
+app.use('/post', postsRouter);
 
 //use 501 NOT Implemented flag - when catch 404 and forward to error handler
 app.use(function(req, res, next) {
   // next(createError(404));
-  res.send(501)
+  res.sendStatus(404)
 });
 
 // error handler

@@ -32,12 +32,14 @@
     "@root": ".",
     "@test": "./test",
     "@main": "./main",
+    "@routes":"./routes",
     "@auth":"./unitils/auth.js"
   },
   "_aliases": {
     "@root": ".",
     "@test": "./test",
     "@main": "./main",
+    "@routes":"./routes",
     "@auth":"./unitils/auth.js"
   }
 }

@@ -20,6 +20,19 @@ test('login sucesss', (done) => {
     )
 })
 
+test('get posts feed sucucess with token', (done) => {
+    axios.get('/', {}).then(res => {
+        console.log(res.data.code)
+        expect(res.data.code).toBe(105)
+        done()
+    }).catch(
+        () => {
+            expect().toThrow()
+        }
+    )
+})
+
+
 test('logout sucesss', (done) => {
     const data = {
         'username': 'test'
@@ -147,6 +160,18 @@ test('get postid unmatch sucucess', (done) => {
     axios.get('/post/1999999999', {}).then(res => {
         console.log(res.data)
         expect(res.data.code).toBe(107)
+        done()
+    }).catch(
+        () => {
+            expect().toThrow()
+        }
+    )
+})
+
+test('get posts feed sucucess without token', (done) => {
+    axios.get('/', {}).then(res => {
+        console.log(res.data.code)
+        expect(res.data.code).toBe(105)
         done()
     }).catch(
         () => {

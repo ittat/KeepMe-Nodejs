@@ -53,7 +53,6 @@ router.post('/create', (req, res, next) => {
   })
 })
 
-//TODO 改成 setToken await 写法 
 router.post('/login', async (req, res, next) => {
   res.statusCode = 200;
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -91,17 +90,15 @@ router.post('/logout', async (req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader('Content-Type', 'application/json');
 
-  let data = {
-    code: 103,
-    msg: null
-  }
+  let data = { code: 103 }
   const username = req.body.username
 
   try {
-    if (!req.headers.authorization) {
+    // NOTE: req.headers.authorization is string
+    if (typeof (req.headers.authorization) === 'undefined' || req.headers.authorization == "null") {
       throw (Error)
     }
-    if (await auth.isAuth(req.headers.authorization)) {
+    else if (await auth.isAuth(req.headers.authorization)) {
       //验证通过，清除token
       const cmd = `update login_data set token=NULL where username='${username}'`
       await pool.query(cmd, (err, sqlres) => {
@@ -134,7 +131,6 @@ router.get('/:username', async (req, res, next) => {
   const username = req.params.username
   try {
     let data = await getUserInfos(username)
-    console.log(data)
     if (data) {
       //成功获取infos
       data.code = 105
