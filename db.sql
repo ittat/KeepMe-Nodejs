@@ -52,8 +52,6 @@ CREATE TABLE `user_infos` (
     `username` varchar(255) DEFAULT NULL,
     `sex` int(2) DEFAULT NULL,
     `desc` varchar(21000) DEFAULT NULL,
-    `follower` text,
-    `follows`   text,
     `like_posts` text,
     PRIMARY KEY (`userId`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -63,7 +61,8 @@ CREATE TABLE `user_infos` (
 --     VALUES (1, (SELECT `username` FROM `login_data` WHERE userId = 1 LIMIT 1) , '1', 'Hi! ALL');
 -- COMMIT;
 
-create trigger triggerName1
+DROP trigger IF EXISTS `triggerName1`;
+create trigger `triggerName1`
 before insert on `user_infos` 
 for each row 
 SET NEW.username = (SELECT username FROM login_data WHERE userId = NEW.userId);
@@ -132,3 +131,59 @@ INSERT INTO `posts_data` (`userId`,`context`,`date`,`time`)
             (SELECT curtime()));
 COMMIT;
 
+
+
+
+DROP TABLE IF EXISTS `follow_link`;
+CREATE TABLE `follow_link` (
+    `followerId` int(11) NOT NULL,
+    `followId` int(11) NOT NULL,
+    PRIMARY KEY(`followerId`,`followId`)
+)ENGINE=InnoDB;
+
+
+BEGIN;
+INSERT INTO `follow_link` VALUES (1,2);
+INSERT INTO `follow_link` VALUES (2,1);
+INSERT INTO `follow_link` VALUES (1,3);
+INSERT INTO `follow_link` VALUES (2,2);
+COMMIT;
+
+
+
+DROP TABLE IF EXISTS `posts_likes`;
+CREATE TABLE `posts_likes` (
+    `postId` int(11) NOT NULL,
+    `userId` int(11) NOT NULL,
+    PRIMARY KEY(`postId`,`userId`)
+)ENGINE=InnoDB;
+
+BEGIN;
+INSERT INTO `posts_likes` VALUES (2025,1);
+INSERT INTO `posts_likes` VALUES (2022,1);
+INSERT INTO `posts_likes` VALUES (2025,2);
+INSERT INTO `posts_likes` VALUES (2025,3);
+COMMIT;
+
+
+DROP TABLE IF EXISTS `posts_commits`;
+CREATE TABLE `posts_commits` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `userId` int(11),
+    -- `commitType` int(2) NOT NULL,
+    `context` text,
+    `toPostId` int(11) NOT NULL,
+    `toUserId` int(11),
+    `created_at` text NOT NULL,
+    PRIMARY KEY(`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+
+BEGIN;
+INSERT INTO `posts_commits` (`userId`,`context`,`toPostId`,`created_at` ) 
+    VALUES (1,"test1111234454rsgfds",2025,(SELECT now()));
+INSERT INTO `posts_commits` (`userId`,`context`,`toPostId`,`created_at` ) 
+    VALUES (2,"sdffdvdf4454rsgfds",2025,(SELECT now()));
+INSERT INTO `posts_commits` (`userId`,`context`,`toPostId`,`toUserId`,`created_at` ) 
+    VALUES (3,"test1454rsgfds",2025,1,(SELECT now()));
+COMMIT;

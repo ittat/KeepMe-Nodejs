@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
 
-//use 501 NOT Implemented - when catch 404 and forward to error handler
+//use 501 NOT Implemented flag - when catch 404 and forward to error handler
 app.use(function(req, res, next) {
   // next(createError(404));
   res.send(501)
