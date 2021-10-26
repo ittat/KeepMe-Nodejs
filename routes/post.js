@@ -10,14 +10,24 @@ const countPostLike = async (postId) => {
 
 const postCommits = async (postId) => {
     const cmd = `select * from posts_commits where toPostId='${postId}' order by created_at`
-    return await sql.doCmd(cmd)
+    let result = null
+    //没有commit 后段 mysql返回 []，docmd抛出异常
+    // 所以要处理，区分是否有评论，异常返回 null
+    try{
+        result = await sql.doCmd(cmd)
+    } finally{
+        return result
+    }
+    
 }
 
 
 router.get('/:postid', async (req, res, next) => {
     const postid = req.params.postid
     let data = { code: 105 }
-    const cmd = `select * from posts_data where postId='${postid}'`
+    const cmd = `select p.*, u.username, u.userImg
+                from posts_data p, user_infos u   
+                where p.postId=${postid} and u.userId=p.userId`
     try {
         const result = await sql.doCmd(cmd)
         result[0].like_sum = await countPostLike(postid)
@@ -45,25 +55,26 @@ router.post('/', async (req, res, next) => {
             const tokenData = await auth.getDataFromToken(req.headers.authorization)
             const postInfo = req.body
             if (postInfo.context && postInfo.img && tokenData.username) {
-                const cmd = `insert into posts_data (userId, context, img, date, time) 
+                const cmd = `insert into posts_data (userId, context, img, date) 
                             values ((select userId from login_data where username='${tokenData.username}'),
                                     '${postInfo.context}',
                                     '${postInfo.img}',
-                                    (select curdate()),
-                                    (select curtime())
+                                    (select now())
                             )`
                 await sql.doCmd(cmd)
                 data.code = 105
                 data.data = '成功发表'
             } else {
+                 data.msg = "提交内容不全"
                 throw (Error)
             }
         } else {
+            data.msg += " 认证不通过"
             throw (Error)
         }
     } catch (err) {
         data.code = 106
-        data.msg = "发送失败"
+        data.msg += "发送失败"
     } finally {
         res.statusCode = 200;
         res.setHeader("Access-Control-Allow-Origin", "*");

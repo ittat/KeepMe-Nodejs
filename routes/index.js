@@ -18,22 +18,22 @@ router.get('/feeds/start=([0-9]+)?/length=([0-9]+)?', async (req, res, next) => 
   try {
     if (typeof (token) === 'undefined' || token === "null" || auth.isAuth(token) === false) {
       //游客 mode
-      cmd = `select p.postId, p.context, p.img, p.date, p.time, u.username 
+      cmd = `select p.postId, p.context, p.img, p.date, u.username 
              from posts_data p, user_infos u
              where  u.userId=p.userId 
-             order by p.date, p.time 
+             order by p.date desc
              limit ${start},${length}`
     } else {
       // user mode
       const tokendata = await auth.getDataFromToken(token)
-      cmd = ` select p.postId, p.context, p.img, p.date, p.time, u.username 
+      cmd = ` select p.postId, p.context, p.img, p.date, u.username 
               from posts_data p, user_infos u
                   where p.userId in 
                     (select followId from follow_link 
                       where followerId=
                         (select userId from login_data where username='${tokendata.username}')
                     ) 
-                  order by p.date, p.time
+                  order by p.date
                   limit ${start},${length}`
     }
 

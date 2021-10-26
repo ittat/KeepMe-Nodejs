@@ -53,6 +53,7 @@ CREATE TABLE `user_infos` (
     `sex` int(2) DEFAULT NULL,
     `desc` varchar(21000) DEFAULT NULL,
     `like_posts` text,
+    `userImg` text,
     PRIMARY KEY (`userId`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -69,12 +70,12 @@ SET NEW.username = (SELECT username FROM login_data WHERE userId = NEW.userId);
 
 
 BEGIN;
-INSERT INTO `user_infos` (`userId`,`sex`,`desc`) 
-    VALUES (1, '1', 'Hi! ALL');
-INSERT INTO `user_infos` (`userId`,`sex`,`desc`) 
-    VALUES (2, '1', 'Hi! I am test2');
-INSERT INTO `user_infos` (`userId`,`sex`,`desc`) 
-    VALUES (3, '2', 'Hi! I am test3');
+INSERT INTO `user_infos` (`userId`,`sex`,`desc`,`userImg`) 
+    VALUES (1, '1', 'Hi! ALL',"https://avatars2.githubusercontent.com/u/8186664?s=460&v=4");
+INSERT INTO `user_infos` (`userId`,`sex`,`desc`,`userImg`) 
+    VALUES (2, '1', 'Hi! I am test2',"https://avatars2.githubusercontent.com/u/8186664?s=460&v=4");
+INSERT INTO `user_infos` (`userId`,`sex`,`desc`,`userImg`) 
+    VALUES (3, '2', 'Hi! I am test3',"https://avatars2.githubusercontent.com/u/8186664?s=460&v=4");
 COMMIT;
 
 
@@ -85,49 +86,24 @@ CREATE TABLE  `posts_data` (
     `postId` int(11) NOT NULL AUTO_INCREMENT,
     `userId` int(11) NOT NULL,
     `context` text,
-    `date` date NOT NULL,
-    `time` time NOT NULL,
+    `date` text NOT NULL,
     `img` text CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
     PRIMARY KEY (`postId`)
 )ENGINE=InnoDB AUTO_INCREMENT=2021 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 BEGIN;
-INSERT INTO `posts_data` (`userId`,`context`,`date`,`time`) 
+INSERT INTO `posts_data` (`userId`,`context`,`date`) 
     VALUES (1, '1 Hi! ALL fjsdkjfhdjsfhjsd jksdfhdjsfhdjksfhdjksf dsfjhdksjfhdksfjhdksdfh dfjdsjkfhdkfs dkfjdskfjsdklfjsfjsdlkfdsdsfkj dkfjsdlkfj ',
-            (SELECT curdate()),
-            (SELECT curtime()));
-INSERT INTO `posts_data` (`userId`,`context`,`date`,`time`) 
+            (SELECT now()));
+INSERT INTO `posts_data` (`userId`,`context`,`date`) 
     VALUES (1, '1port2 fjsdkjfhdjsfhjsd jksdfhdjsfhdjksfhdjksf dsfjhdksjfhdksfjhdksdfh dfjdsjkfhdkfs dkfjdskfjsdklfjsfjsdlkfdsdsfkj dkfjsdlkfj ',
-            (SELECT curdate()),
-            (SELECT curtime()));
-INSERT INTO `posts_data` (`userId`,`context`,`date`,`time`) 
+            (SELECT now()));
+INSERT INTO `posts_data` (`userId`,`context`,`date`) 
     VALUES (1, '1port3 fjsdkjfhdjsfhjsd jksdfhdjsfhdjksfhdjksf dsfjhdksjfhdksfjhdksdfh dfjdsjkfhdkfs dkfjdskfjsdklfjsfjsdlkfdsdsfkj dkfjsdlkfj ',
-            (SELECT curdate()),
-            (SELECT curtime()));
-INSERT INTO `posts_data` (`userId`,`context`,`date`,`time`) 
+            (SELECT now()));
+INSERT INTO `posts_data` (`userId`,`context`,`date`) 
     VALUES (1, '1port4 fjsdkjfhdjsfhjsd jksdfhdjsfhdjksfhdjksf dsfjhdksjfhdksfjhdksdfh dfjdsjkfhdkfs dkfjdskfjsdklfjsfjsdlkfdsdsfkj dkfjsdlkfj ',
-            (SELECT curdate()),
-            (SELECT curtime()));
-INSERT INTO `posts_data` (`userId`,`context`,`date`,`time`) 
-    VALUES (2, '2port1 fjsdkjfhdjsfhjsd jksdfhdjsfhdjksfhdjksf dsfjhdksjfhdksfjhdksdfh dfjdsjkfhdkfs dkfjdskfjsdklfjsfjsdlkfdsdsfkj dkfjsdlkfj ',
-            (SELECT curdate()),
-            (SELECT curtime()));
-INSERT INTO `posts_data` (`userId`,`context`,`date`,`time`) 
-    VALUES (2, '2port2 fjsdkjfhdjsfhjsd jksdfhdjsfhdjksfhdjksf dsfjhdksjfhdksfjhdksdfh dfjdsjkfhdkfs dkfjdskfjsdklfjsfjsdlkfdsdsfkj dkfjsdlkfj ',
-            (SELECT curdate()),
-            (SELECT curtime()));
-INSERT INTO `posts_data` (`userId`,`context`,`date`,`time`) 
-    VALUES (2, '2port3 fjsdkjfhdjsfhjsd jksdfhdjsfhdjksfhdjksf dsfjhdksjfhdksfjhdksdfh dfjdsjkfhdkfs dkfjdskfjsdklfjsfjsdlkfdsdsfkj dkfjsdlkfj ',
-            (SELECT curdate()),
-            (SELECT curtime()));
-INSERT INTO `posts_data` (`userId`,`context`,`date`,`time`) 
-    VALUES (3, '3port1 fjsdkjfhdjsfhjsd jksdfhdjsfhdjksfhdjksf dsfjhdksjfhdksfjhdksdfh dfjdsjkfhdkfs dkfjdskfjsdklfjsfjsdlkfdsdsfkj dkfjsdlkfj ',
-            (SELECT curdate()),
-            (SELECT curtime()));
-INSERT INTO `posts_data` (`userId`,`context`,`date`,`time`) 
-    VALUES (3, '3port2 fjsdkjfhdjsfhjsd jksdfhdjsfhdjksfhdjksf dsfjhdksjfhdksfjhdksdfh dfjdsjkfhdkfs dkfjdskfjsdklfjsfjsdlkfdsdsfkj dkfjsdlkfj ',
-            (SELECT curdate()),
-            (SELECT curtime()));
+            (SELECT now()));
 COMMIT;
 
 

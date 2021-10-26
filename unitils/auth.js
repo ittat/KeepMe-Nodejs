@@ -50,19 +50,18 @@ const getDataFromToken = async (token) =>{
 }
 
 const isAuth = async (token) => {
+    let isOK
     try {
         if (!token) {
             throw (Error)
         }
-        let isAuth
         const data = await getDataFromToken(token)
         const password = await getPassWordFormDB(data.username)
-        isAuth = (data.password == password) ? true : false
+        isOK = (data.password == password) ? true : false
     } catch (err) {
-        // console.error(err);
-        isAuth = false
+        isOK = false
     } finally {
-        return isAuth
+        return isOK
     }
 }
 

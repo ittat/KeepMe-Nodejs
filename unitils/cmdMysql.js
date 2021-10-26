@@ -16,11 +16,11 @@ const doCmd = async (cmd) => {
                 //正常输出
                 // 有返回结果，res = []
                 if (typeof(res) == "object" && res.length == 0) {
-                    console.log("jie@@@@@@@");
+                    console.log("进入薛定谔模式，请检查！！！");
                     j(res)
                 } else {
                     // 无返回结果 sqlres = {message: ''}
-                    console.log("确认无返回结果!")
+                    // console.log("确认有返回结果!")
                     r(res)
                 }
             }

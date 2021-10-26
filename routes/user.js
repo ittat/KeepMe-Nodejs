@@ -36,11 +36,13 @@ router.post('/login', async (req, res, next) => {
 
   //查询mysql
   try {
-    const cmd = `SELECT password FROM login_data where username='${req.body.username}'`
+    const cmd = `SELECT password,username,userId FROM login_data where username='${req.body.username}'`
     const result = await sql.doCmd(cmd)
     if (result[0].password == req.body.password) {
       data.code = 102
-      data.token = auth.signToken(req.body)
+      result[0].token = auth.signToken(req.body)
+      result[0].password = ""
+      data.data = result[0]
     } else {
       data.msg = "unmatch password"
       data.code = 101
@@ -86,14 +88,14 @@ router.post('/logout', async (req, res, next) => {
 })
 
 
-router.get('/:username', async (req, res, next) => {
+router.get('/:userId', async (req, res, next) => {
   res.statusCode = 200;
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader('Content-Type', 'application/json');
   const data = { code: 105 }
 
   try {
-    const cmd = `select * from user_infos where username='${req.params.username}'`
+    const cmd = `select * from user_infos where userId='${req.params.userId}'`
     data.data = (await sql.doCmd(cmd))[0]
     data.code = 105
   } catch (err) {
