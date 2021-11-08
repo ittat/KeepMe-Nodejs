@@ -16,7 +16,8 @@ router.get('/feeds/start=([0-9]+)?/length=([0-9]+)?', async (req, res, next) => 
     code: 105
   }
   try {
-    if (typeof (token) === 'undefined' || token === "null" || auth.isAuth(token) === false) {
+    // console.log(await auth.isAuth(token))
+    if (typeof (token) === 'undefined' || token === "null" || (await auth.isAuth(token)) === false) {
       //游客 mode
       cmd = `select p.postId, p.context, p.img, p.date, u.username 
              from posts_data p, user_infos u
@@ -40,9 +41,9 @@ router.get('/feeds/start=([0-9]+)?/length=([0-9]+)?', async (req, res, next) => 
     data.code = 105
     data.data = await sql.doCmd(cmd)
   } catch (error) {
-    console.error(error)
-    data.code = 106
-    data.msg = error
+    //异常处理
+      data.code = 106
+      data.msg = error
   } finally {
     res.statusCode = 200;
     res.setHeader("Access-Control-Allow-Origin", "*");

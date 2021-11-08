@@ -59,6 +59,7 @@ const isAuth = async (token) => {
         const password = await getPassWordFormDB(data.username)
         isOK = (data.password == password) ? true : false
     } catch (err) {
+        // console.log(err)
         isOK = false
     } finally {
         return isOK

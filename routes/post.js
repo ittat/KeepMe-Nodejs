@@ -9,7 +9,7 @@ const countPostLike = async (postId) => {
 }
 
 const postCommits = async (postId) => {
-    const cmd = `select * from posts_commits where toPostId='${postId}' order by created_at`
+    const cmd = `select p.* , u.username from posts_commits p, user_infos u where p.toPostId='${postId}' and u.userId=p.userId order by created_at`
     let result = null
     //没有commit 后段 mysql返回 []，docmd抛出异常
     // 所以要处理，区分是否有评论，异常返回 null
@@ -22,6 +22,19 @@ const postCommits = async (postId) => {
 }
 
 
+const countCommits = async (postId) => {
+    const cmd = `select count(*) from posts_commits where toPostId='${postId}' `
+    let result = null
+    //没有commit 后段 mysql返回 []，docmd抛出异常
+    // 所以要处理，区分是否有评论，异常返回 null
+    try{
+        result = (await sql.doCmd(cmd))[0]['count(*)']
+    } finally{
+        return result
+    }
+    
+}
+
 router.get('/:postid', async (req, res, next) => {
     const postid = req.params.postid
     let data = { code: 105 }
@@ -31,7 +44,7 @@ router.get('/:postid', async (req, res, next) => {
     try {
         const result = await sql.doCmd(cmd)
         result[0].like_sum = await countPostLike(postid)
-        result[0].commits = await postCommits(postid)
+        result[0].commits_sum = await countCommits(postid)
         data.code = 105
         data.data = result[0]
     } catch (error) {
@@ -72,9 +85,12 @@ router.post('/', async (req, res, next) => {
             data.msg += " 认证不通过"
             throw (Error)
         }
-    } catch (err) {
+    } catch (error) {
         data.code = 106
-        data.msg += "发送失败"
+        data.msg = error
+        if (error?.name == "JsonWebTokenError") {
+            data.code = 103
+        }
     } finally {
         res.statusCode = 200;
         res.setHeader("Access-Control-Allow-Origin", "*");
@@ -102,7 +118,7 @@ router.get('/:postid/like_sum', async (req, res, next) => {
 });
 
 // /post/:id/like/:action
-router.get('/:postid/like/:action', async (req, res, next) => {
+router.post('/:postid/like/:action', async (req, res, next) => {
     res.statusCode = 200;
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader('Content-Type', 'application/json');
@@ -112,7 +128,7 @@ router.get('/:postid/like/:action', async (req, res, next) => {
     const token = req.headers.authorization
     try {
         if (action != 'add' && action != 'remove') {
-            throw (Error)
+            throw ("请求不规范")
         } else if (auth.isAuth(token)) {
             const tokenData = await auth.getDataFromToken(token)
             const cmdAddLike = `insert into posts_likes values (${postid},
@@ -126,12 +142,15 @@ router.get('/:postid/like/:action', async (req, res, next) => {
             data.msg = await sql.doCmd(cmd)
 
         } else {
-            throw (Error)
+            throw ("未登陆或者请求不规范！")
         }
 
     } catch (error) {
         data.code = 106
-        data.msg = "发送失败"
+        data.msg = error
+        if (error?.name == "JsonWebTokenError") {
+            data.code = 103
+        }
     } finally {
         res.statusCode = 200;
         res.setHeader("Access-Control-Allow-Origin", "*");
@@ -141,14 +160,13 @@ router.get('/:postid/like/:action', async (req, res, next) => {
 });
 
 
-// /post/:id/commit
+// PSOT /post/:id/commit
 router.post('/:postid/commit', async (req, res, next) => {
     let data = { code: 105 }
     const postid = req.params.postid
     const token = req.headers.authorization
     try {
         if (req.body.context && auth.isAuth(token)) {
-            // console.log(req.body);
             const tokenData = await auth.getDataFromToken(token)
             const cmd = `insert into posts_commits (userId,context,toPostId,created_at)
                         values (
@@ -161,12 +179,37 @@ router.post('/:postid/commit', async (req, res, next) => {
             data.code = 105
             data.msg = await sql.doCmd(cmd)
         } else {
-            throw (Error)
+            throw ("未登陆或者发送不规范！")
         }
 
     } catch (error) {
         data.code = 106
-        data.msg = "发送失败"
+        data.msg = error
+        if (error?.name == "JsonWebTokenError") {
+            data.code = 103
+        }
+    } finally {
+        res.statusCode = 200;
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader('Content-Type', 'application/json');
+        res.send(data)
+    }
+
+});
+
+
+// 获取commit
+router.get('/:postid/commit', async (req, res, next) => {
+    let data = { code: 105 }
+    const postid = req.params.postid
+    try {
+
+            data.code = 105
+            data.data = await postCommits(postid)
+
+    } catch (error) {
+        data.code = 106
+        data.msg = error
     } finally {
         res.statusCode = 200;
         res.setHeader("Access-Control-Allow-Origin", "*");
@@ -184,7 +227,7 @@ router.post('/:postid/commit/to/:userId', async (req, res, next) => {
     const token = req.headers.authorization
     try {
         if (req.body.context && auth.isAuth(token)) {
-            console.log(req.body);
+            // console.log(req.body);
             const tokenData = await auth.getDataFromToken(token)
             const cmd = `insert into posts_commits (userId,context,toPostId,toUserId,created_at)
                         values (
@@ -197,12 +240,15 @@ router.post('/:postid/commit/to/:userId', async (req, res, next) => {
             data.code = 105
             data.msg = await sql.doCmd(cmd)
         } else {
-            throw (Error)
+            throw ("请求不规范！")
         }
 
     } catch (error) {
         data.code = 106
-        data.msg = "发送失败"
+        data.msg = error
+        if (error?.name == "JsonWebTokenError") {
+            data.code = 103
+        }
     } finally {
         res.statusCode = 200;
         res.setHeader("Access-Control-Allow-Origin", "*");
