@@ -1,5 +1,6 @@
 import pool from "@main/mysql"
 import jwt from "jsonwebtoken"
+import sql from "@sql"
 
 const PrivateKey = "test-key"
 
@@ -14,20 +15,19 @@ const signToken = (data) => {
 
 const getPassWordFormDB = async (username) => {
     //mysql
-    return new Promise((r, j) => {
         const cmd = `SELECT password FROM login_data where username='${username}'`
-        pool.query(cmd, (err, res) => {
-            if (err) {
-                j(err)
-            } else {
-                if (typeof (res[0]) === 'undefined') {
-                    j()
-                }
-                r(res[0].password)
+        return (await sql.doCmd(cmd))[0].password
+        // pool.query(cmd, (err, res) => {
+        //     if (err) {
+        //         j(err)
+        //     } else {
+        //         if (typeof (res[0]) === 'undefined') {
+        //             j()
+        //         }
+        //         r(res[0].password)
 
-            }
-        })
-    })
+        //     }
+        // })
 }
 
 const unsignatureToken = async (token) => {
